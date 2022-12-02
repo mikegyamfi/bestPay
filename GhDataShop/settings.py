@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-2cnc60dukqip9#15@lec5!hf8but3jtr*m6@hx54)f()f#_-q3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'https://bestpay-app-id6nm.ondigitalocean.app/'
+]
 
 
 # Application definition
