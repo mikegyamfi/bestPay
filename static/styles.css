@@ -1,0 +1,30 @@
+body{
+    padding: 20px 60px;
+}
+
+.header{
+    background-image: linear-gradient(to bottom right, #B469FF, #E85BFF);
+    color: white;
+}
+
+.airtime-body{
+    border: 1px solid #B469FF;
+    width: 80vw;
+    padding: 20px 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

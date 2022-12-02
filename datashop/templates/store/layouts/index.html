@@ -1,0 +1,25 @@
+{% include 'store/inc/base.html' %}
+{% load bootstrap4 %} 
+
+{% block content %}
+
+<div class="airtime-body">
+    <div class="jumbotron header">
+        <h1 class="display-4">Welcome to GhDataShop</h1>
+        <p class="lead">Leading Airtime and Momo Service Provider.</p>
+        <hr class="my-4">
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="#" role="button">Airtime</a>
+          <a class="btn btn-primary btn-lg" href="#" role="button">Mobile Money</a>
+        </p>
+    </div>
+    
+    {% bootstrap_messages %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Buy</button>
+    </form>
+</div>
+
+{% endblock content %}
