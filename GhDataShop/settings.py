@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-2cnc60dukqip9#15@lec5!hf8but3jtr*m6@hx54)f()f#_-q3
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'bestpay-app-id6nm.ondigitalocean.app'
+    'bestpay-app-id6nm.ondigitalocean.app',
+    '127.0.0.1'
 ]
 
 
