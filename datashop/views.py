@@ -45,8 +45,8 @@ def home(request):
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
-            data = response.json()
-            print(data)
+            if response.status_code == 200:
+                messages.info(request, "Successful")
             
 
             return render(request, 'store/layouts/index.html', context={'form': form})
