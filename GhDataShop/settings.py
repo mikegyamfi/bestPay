@@ -28,7 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'bestpay-app-id6nm.ondigitalocean.app',
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost'
 ]
 
 
