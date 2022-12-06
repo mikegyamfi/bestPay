@@ -41,7 +41,6 @@ def mtn_request(request):
                 messages.info(request, "Successful")
                 checkout = data['data']['checkoutUrl']
                 return redirect(checkout)
-                return redirect('send_airtime', client_ref=client_reference)
             else:
                 messages.info(request, "Failed. Try again later")
             return render(request, 'store/layouts/mtn.html', context={'form': form})
