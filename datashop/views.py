@@ -22,7 +22,7 @@ def mtn_request(request):
             "totalAmount": amount,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569',
-            "returnUrl": f'http://127.0.0.1:8000/send_airtime_mtn/{client_ref}/{phone}/{amount}',
+            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_mtn/{client_ref}/{phone}/{amount}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -98,7 +98,7 @@ def voda_request(request):
             "totalAmount": amount,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569',
-            "returnUrl": f'http://127.0.0.1:8000/send_airtime_voda/{client_ref}/{phone}/{amount}',
+            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_voda/{client_ref}/{phone}/{amount}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -172,7 +172,7 @@ def airtel_tigo_request(request):
             "totalAmount": amount,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569',
-            "returnUrl": f'http://127.0.0.1:8000/send_airtime_tigo/{client_ref}/{phone}/{amount}',
+            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_tigo/{client_ref}/{phone}/{amount}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
