@@ -16,10 +16,13 @@ def mtn_request(request):
             phone = str(form.cleaned_data['phone'])
             amount = str(form.cleaned_data['amount'])
 
+            percentage = 0.01 * amount
+            amount_to_be_paid = amount - percentage
+
             url = "https://payproxyapi.hubtel.com/items/initiate"
 
             payload = json.dumps({
-            "totalAmount": amount,
+            "totalAmount": amount_to_be_paid,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569',
             "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_mtn/{client_ref}/{phone}/{amount}',
