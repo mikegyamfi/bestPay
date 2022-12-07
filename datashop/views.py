@@ -16,7 +16,7 @@ def mtn_request(request):
             phone = str(form.cleaned_data['phone'])
             amount = str(form.cleaned_data['amount'])
 
-            percentage = 0.01 * double(amount)
+            percentage = 0.01 * float(amount)
             amount_to_be_paid = amount - percentage
 
             url = "https://payproxyapi.hubtel.com/items/initiate"
