@@ -62,7 +62,7 @@ def send_airtime_mtn(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             mtn_url = "https://cs.hubtel.com/commissionservices/2016884/fdd76c884e614b1c8f669a3207b09a98"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
@@ -137,7 +137,7 @@ def send_airtime_voda(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             voda_url = "https://cs.hubtel.com/commissionservices/2016884/f4be83ad74c742e185224fdae1304800"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
@@ -210,14 +210,14 @@ def send_airtime_tigo(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             tigo_url = "https://cs.hubtel.com/commissionservices/2016884/dae2142eb5a14c298eace60240c09e4b"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
-            headers = {
+            airtime_headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
                 'Content-Type': 'text/plain'
             }
 
-            response = requests.request("POST", tigo_url, headers=headers, data=payload)
+            response = requests.request("POST", tigo_url, headers=airtime_headers, data=payload)
 
             if response.status_code == 200:
                 return redirect('thank_you')
