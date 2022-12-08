@@ -1,0 +1,23 @@
+{% include 'store/base.html' %}
+{% load bootstrap4 %} 
+
+{% block content %}
+
+<div class="container">
+    <div class="jumbotron header">
+        <h1 class="display-4">Something went wrong!</h1>
+        <p class="lead">Contact Support for assistance.</p>
+        <hr class="my-4">
+        <p class="lead">
+        </p>
+    </div>
+{% comment %}     
+    {% bootstrap_messages %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Buy</button>
+    </form> {% endcomment %}
+</div>
+
+{% endblock content %}

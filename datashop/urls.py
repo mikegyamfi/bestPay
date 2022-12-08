@@ -9,5 +9,6 @@ urlpatterns = [
     path('send_airtime_mtn/<str:client_ref>/<str:phone>/<str:amount>', views.send_airtime_mtn, name="send_airtime_mtn"),
     path('send_airtime_tigo/<str:client_ref>/<str:phone>/<str:amount>', views.send_airtime_tigo, name="send_airtime_tigo"),
     path('send_airtime_voda/<str:client_ref>/<str:phone>/<str:amount>', views.send_airtime_voda, name="send_airtime_voda"),
-    path('thank_you', views.thank_you, name="thank_you")
+    path('thank_you', views.thank_you, name="thank_you"),
+    path('failed', views.failed, name="failed")
 ]
