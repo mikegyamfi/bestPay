@@ -13,7 +13,7 @@ def pay_for_50p_bundle(request):
         form = BundleForm(request.POST)
         if form.is_valid():
             phone_number = str(form.cleaned_data["phone"])
-            amount = 0.5      
+            amount = 0.49    
 
             url = "https://payproxyapi.hubtel.com/items/initiate"
 

@@ -19,6 +19,9 @@ def mtn_request(request):
             amount_to_be_charged = amount
 
             float_amount = float(amount)
+            if float_amount == 0.5:
+                percentage = 0.01
+                amount_to_be_charged = float_amount - percentage
             if float_amount == 1.00:
                 percentage = 0.01
                 amount_to_be_charged = float_amount - percentage
