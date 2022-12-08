@@ -42,8 +42,8 @@ def pay_for_50p_bundle(request):
             else:
                 messages.info(request, "Failed. Try again later")
             return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-    form = BundleForm()
+    else:
+        form = BundleForm()
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
@@ -56,7 +56,10 @@ def send_50p_bundle(request, client_ref, phone_number):
 
     for request in webhook_response.json()['data']:
         try:
-            content = json.loads(request["content"])
+            try:
+                content = json.loads(request["content"])
+            except ValueError:
+                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_50_mtn_bundle/{client_ref}/{phone_number}")
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
         except KeyError:

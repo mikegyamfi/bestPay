@@ -26,4 +26,4 @@ class BundleForm(forms.Form):
             raise forms.ValidationError('Fill all the spaces provided!')
         if phone:
             if str(phone)[:3] != "233":
-                raise forms.ValidationError('Number must start with country code: 233')
+                raise forms.ValidationError('Number must start with country code: Eg. 233XXXXXXXXX')
