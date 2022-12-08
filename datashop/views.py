@@ -152,7 +152,7 @@ def voda_request(request):
                 messages.info(request, "Failed. Try again later")
             return render(request, 'store/layouts/voda.html', context={'form': form})
     else:
-        form = AirtimeForm()
+        form = AirtimeForm(initial={'phone':233})
     return render(request, 'store/layouts/voda.html', context={'form': form})
 
 
@@ -241,7 +241,7 @@ def airtel_tigo_request(request):
                 messages.info(request, "Failed. Try again later")
             return render(request, 'store/layouts/tigo.html', context={'form': form})
     else:
-        form = AirtimeForm()
+        form = AirtimeForm(initial={'phone':233})
     return render(request, 'store/layouts/tigo.html', context={'form': form})
 
 def send_airtime_tigo(request, client_ref, phone, amount):
@@ -329,7 +329,7 @@ def glo_request(request):
                 messages.info(request, "Failed. Try again later")
             return render(request, 'store/layouts/glo.html', context={'form': form})
     else:
-        form = AirtimeForm()
+        form = AirtimeForm(initial={'phone':233})
     return render(request, 'store/layouts/glo.html', context={'form': form})
 
 
