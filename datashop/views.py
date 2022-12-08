@@ -106,10 +106,23 @@ def voda_request(request):
             phone = str(form.cleaned_data['phone'])
             amount = str(form.cleaned_data['amount'])
 
+            amount_to_be_charged = amount
+
+            float_amount = float(amount)
+            if float_amount == 1.00:
+                percentage = 0.01
+                amount_to_be_charged = float_amount - percentage
+            elif float_amount >= 2 and float_amount <= 10:
+                percentage = 0.10
+                amount_to_be_charged = float_amount - percentage
+            elif float_amount >= 11 and float_amount <= 50:
+                percentage = 0.50
+                amount_to_be_charged = float_amount - percentage 
+
             url = "https://payproxyapi.hubtel.com/items/initiate"
 
             payload = json.dumps({
-            "totalAmount": amount,
+            "totalAmount": amount_to_be_charged,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569',
             "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_voda/{client_ref}/{phone}/{amount}',
@@ -180,10 +193,23 @@ def airtel_tigo_request(request):
             phone = str(form.cleaned_data['phone'])
             amount = str(form.cleaned_data['amount'])
 
+            amount_to_be_charged = amount
+
+            float_amount = float(amount)
+            if float_amount == 1.00:
+                percentage = 0.01
+                amount_to_be_charged = float_amount - percentage
+            elif float_amount >= 2 and float_amount <= 10:
+                percentage = 0.10
+                amount_to_be_charged = float_amount - percentage
+            elif float_amount >= 11 and float_amount <= 50:
+                percentage = 0.50
+                amount_to_be_charged = float_amount - percentage 
+
             url = "https://payproxyapi.hubtel.com/items/initiate"
 
             payload = json.dumps({
-            "totalAmount": amount,
+            "totalAmount": amount_to_be_charged,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569',
             "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_tigo/{client_ref}/{phone}/{amount}',
