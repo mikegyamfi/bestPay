@@ -43,7 +43,7 @@ def pay_for_50p_bundle(request):
                 messages.info(request, "Failed. Try again later")
             return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
     else:
-        form = BundleForm()
+        form = BundleForm(initial={'phone':233})
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
