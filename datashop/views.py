@@ -66,7 +66,7 @@ def send_airtime_mtn(request, client_ref, phone, amount):
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
-    webhook_response = requests.request("GET", "https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
         try:
             content = json.loads(request["content"])
@@ -157,7 +157,7 @@ def send_airtime_voda(request, client_ref, phone, amount):
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
-    webhook_response = requests.request("GET", "https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
         content = json.loads(request["content"])
         status = content["Status"]
@@ -243,7 +243,7 @@ def send_airtime_tigo(request, client_ref, phone, amount):
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
-    webhook_response = requests.request("GET", "https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
         content = json.loads(request["content"])
         status = content["Status"]
