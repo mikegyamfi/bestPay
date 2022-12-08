@@ -26,7 +26,7 @@ def mtn_request(request):
                 percentage = 0.10
                 amount_to_be_charged = float_amount - percentage
             elif float_amount >= 11 and float_amount <= 50:
-                percentage == 0.50
+                percentage = 0.50
                 amount_to_be_charged = float_amount - percentage       
 
             url = "https://payproxyapi.hubtel.com/items/initiate"
