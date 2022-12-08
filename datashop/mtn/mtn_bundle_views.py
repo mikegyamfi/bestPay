@@ -21,7 +21,7 @@ def pay_for_50p_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'http://127.0.0.1:8000/send_50_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_50_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
