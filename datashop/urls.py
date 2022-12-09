@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 from .mtn import mtn_bundle_views as bundle_views
 from .airtelTigo import airtelTigo_bundle_views as tigo_bundle_views
+from .voda import voda_bundle_views as voda_bundle_views
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -88,5 +89,8 @@ urlpatterns = [
 
     path('bundle/tigo/400', tigo_bundle_views.pay_for_400_bundle, name="tigo_400_bundle"),
     path('send_400_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_400_bundle, name="send_400_bundle"),
+    ##########################################################################################################################
 
+    path('bundle/voda/0.5', voda_bundle_views.pay_for_50p_bundle, name="voda_50p_bundle"),
+    path('send_50p_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_50p_bundle, name="send_50p_bundle"),
 ]

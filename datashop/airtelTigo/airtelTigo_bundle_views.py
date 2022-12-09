@@ -81,7 +81,7 @@ def send_1_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -162,7 +162,7 @@ def send_2_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -243,7 +243,7 @@ def send_5_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -324,7 +324,7 @@ def send_10_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -405,7 +405,7 @@ def send_20_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -486,7 +486,7 @@ def send_50_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -567,7 +567,7 @@ def send_100_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -648,7 +648,7 @@ def send_300_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -729,7 +729,7 @@ def send_350_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
@@ -810,7 +810,7 @@ def send_400_bundle(request, client_ref, phone_number):
                 return redirect("failed")
                     
             form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
+            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
 
