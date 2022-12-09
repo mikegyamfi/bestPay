@@ -93,4 +93,34 @@ urlpatterns = [
 
     path('bundle/voda/0.5', voda_bundle_views.pay_for_50p_bundle, name="voda_50p_bundle"),
     path('send_50p_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_50p_bundle, name="send_50p_bundle"),
+
+    path('bundle/voda/1', voda_bundle_views.pay_for_1_bundle, name="voda_1_bundle"),
+    path('send_1_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_1_bundle, name="send_1_bundle"),
+
+    path('bundle/voda/2', voda_bundle_views.pay_for_2_bundle, name="voda_2_bundle"),
+    path('send_2_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_2_bundle, name="send_2_bundle"),
+
+    path('bundle/voda/5', voda_bundle_views.pay_for_5_bundle, name="voda_5_bundle"),
+    path('send_5_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_5_bundle, name="send_5_bundle"),
+
+    path('bundle/voda/10', voda_bundle_views.pay_for_10_bundle, name="voda_10_bundle"),
+    path('send_10_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_10_bundle, name="send_10_bundle"),
+
+    path('bundle/voda/20', voda_bundle_views.pay_for_20_bundle, name="voda_20_bundle"),
+    path('send_20_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_20_bundle, name="send_20_bundle"),
+
+    path('bundle/voda/50', voda_bundle_views.pay_for_50_bundle, name="voda_50_bundle"),
+    path('send_50_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_50_bundle, name="send_50_bundle"),
+
+    path('bundle/voda/100', voda_bundle_views.pay_for_100_bundle, name="voda_100_bundle"),
+    path('send_100_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_100_bundle, name="send_100_bundle"),
+
+    path('bundle/voda/200', voda_bundle_views.pay_for_200_bundle, name="voda_200_bundle"),
+    path('send_200_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_200_bundle, name="send_200_bundle"),
+
+    path('bundle/voda/300', voda_bundle_views.pay_for_300_bundle, name="voda_300_bundle"),
+    path('send_300_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_300_bundle, name="send_300_bundle"),
+
+    path('bundle/voda/400', voda_bundle_views.pay_for_400_bundle, name="voda_400_bundle"),
+    path('send_400_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_400_bundle, name="send_400_bundle"),
 ]
