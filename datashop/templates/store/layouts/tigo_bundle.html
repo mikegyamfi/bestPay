@@ -1,0 +1,15 @@
+{% include 'store/base.html' %}
+{% load bootstrap4 %} 
+
+{% block content %}
+
+<div class="container">
+    {% bootstrap_messages %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Buy</button>
+    </form>
+</div>
+
+{% endblock content %}

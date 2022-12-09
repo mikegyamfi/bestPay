@@ -2,6 +2,7 @@ from django.conf import settings
 from django.urls import path
 from . import views
 from .mtn import mtn_bundle_views as bundle_views
+from .airtelTigo import airtelTigo_bundle_views as tigo_bundle_views
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -56,4 +57,36 @@ urlpatterns = [
 
     path('bundle/mtn/299', bundle_views.pay_for_299_bundle, name="mtn_299_bundle"),
     path('send_299_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_299_bundle, name="send_299_bundle"),
+    ####################################################################################################################
+
+    path('bundle/tigo/1', tigo_bundle_views.pay_for_1_bundle, name="tigo_1_bundle"),
+    path('send_1_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_1_bundle, name="send_1_bundle"),
+
+    path('bundle/tigo/2', tigo_bundle_views.pay_for_2_bundle, name="tigo_2_bundle"),
+    path('send_2_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_2_bundle, name="send_2_bundle"),
+
+    path('bundle/tigo/5', tigo_bundle_views.pay_for_5_bundle, name="tigo_5_bundle"),
+    path('send_5_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_5_bundle, name="send_5_bundle"),
+
+    path('bundle/tigo/10', tigo_bundle_views.pay_for_10_bundle, name="tigo_10_bundle"),
+    path('send_10_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_10_bundle, name="send_10_bundle"),
+
+    path('bundle/tigo/20', tigo_bundle_views.pay_for_20_bundle, name="tigo_20_bundle"),
+    path('send_20_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_20_bundle, name="send_20_bundle"),
+
+    path('bundle/tigo/50', tigo_bundle_views.pay_for_50_bundle, name="tigo_50_bundle"),
+    path('send_50_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_50_bundle, name="send_50_bundle"),
+
+    path('bundle/tigo/100', tigo_bundle_views.pay_for_100_bundle, name="tigo_100_bundle"),
+    path('send_100_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_100_bundle, name="send_100_bundle"),
+
+    path('bundle/tigo/300', tigo_bundle_views.pay_for_300_bundle, name="tigo_300_bundle"),
+    path('send_300_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_300_bundle, name="send_300_bundle"),
+
+    path('bundle/tigo/350', tigo_bundle_views.pay_for_350_bundle, name="tigo_350_bundle"),
+    path('send_350_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_350_bundle, name="send_350_bundle"),
+
+    path('bundle/tigo/400', tigo_bundle_views.pay_for_400_bundle, name="tigo_400_bundle"),
+    path('send_400_tigo_bundle/<str:client_ref>/<str:phone_number>', tigo_bundle_views.send_400_bundle, name="send_400_bundle"),
+
 ]
