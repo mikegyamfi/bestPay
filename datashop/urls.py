@@ -18,10 +18,13 @@ urlpatterns = [
     path('failed', views.failed, name="failed"),
     ###################################################################################################################
     path('bundle/mtn/0.5', bundle_views.pay_for_50p_bundle, name="mtn_50p_bundle"),
-    path('send_50_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_50p_bundle, name="send_50p_bundle"),
+    path('send_0.5_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_50p_bundle, name="send_50p_bundle"),
 
     path('bundle/mtn/1', bundle_views.pay_for_1_bundle, name="mtn_1_bundle"),
     path('send_1_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_1_bundle, name="send_1_bundle"),
+
+    path('bundle/mtn/2', bundle_views.pay_for_2_bundle, name="mtn_2_bundle"),
+    path('send_2_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_2_bundle, name="send_2_bundle"),
 
     path('bundle/mtn/3', bundle_views.pay_for_3_bundle, name="mtn_3_bundle"),
     path('send_3_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_3_bundle, name="send_3_bundle"),
