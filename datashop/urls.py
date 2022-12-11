@@ -64,6 +64,9 @@ urlpatterns = [
 
     path('bundle/mtn/300', bundle_views.pay_for_300_bundle, name="mtn_300_bundle"),
     path('send_300_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_300_bundle, name="send_300_bundle"),
+
+    path('bundle/mtn/400', bundle_views.pay_for_400_bundle, name="mtn_400_bundle"),
+    path('send_400_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_400_bundle, name="send_400_bundle"),
     ####################################################################################################################
 
     path('bundle/tigo/1', tigo_bundle_views.pay_for_1_bundle, name="tigo_1_bundle"),
