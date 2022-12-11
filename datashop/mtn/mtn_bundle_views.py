@@ -1140,14 +1140,14 @@ def send_250_bundle(request, client_ref, phone_number):
 
 ######################################### 299 CEDI BUNDLE ######################################################
 
-def pay_for_299_bundle(request):
+def pay_for_300_bundle(request):
     client_ref = 'gds'+str(random.randint(11111111, 99999999))
 
     if request.method == "POST":
         form = BundleForm(request.POST)
         if form.is_valid():
             phone_number = str(form.cleaned_data["phone"])
-            amount = 299
+            amount = 300
 
             url = "https://payproxyapi.hubtel.com/items/initiate"
 
@@ -1155,7 +1155,7 @@ def pay_for_299_bundle(request):
             "totalAmount": amount,
             "description": "53.58GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_299_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_300_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1181,7 +1181,7 @@ def pay_for_299_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_299_bundle(request, client_ref, phone_number):
+def send_300_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -1193,7 +1193,7 @@ def send_299_bundle(request, client_ref, phone_number):
             try:
                 content = json.loads(request["content"])
             except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_299_mtn_bundle/{client_ref}/{phone_number}")
+                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_300_mtn_bundle/{client_ref}/{phone_number}")
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
         except KeyError:
@@ -1218,3 +1218,5 @@ def send_299_bundle(request, client_ref, phone_number):
             return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
 
             break
+
+
