@@ -29,6 +29,9 @@ urlpatterns = [
     path('bundle/mtn/3', bundle_views.pay_for_3_bundle, name="mtn_3_bundle"),
     path('send_3_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_3_bundle, name="send_3_bundle"),
 
+    path('bundle/mtn/5', bundle_views.pay_for_5_bundle, name="mtn_5_bundle"),
+    path('send_5_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_5_bundle, name="send_5_bundle"),
+
     path('bundle/mtn/10', bundle_views.pay_for_10_bundle, name="mtn_10_bundle"),
     path('send_10_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_10_bundle, name="send_10_bundle"),
 
