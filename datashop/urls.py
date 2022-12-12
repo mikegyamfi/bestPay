@@ -174,5 +174,8 @@ urlpatterns = [
 
     ############################################################################################################33
     path('pay_for_gotv', gotv_views.pay_for_gotv, name="pay_for_gotv"),
-    path('send_gotv_amount/<str:client_ref>/<str:account_number>/<str:amount>', gotv_views.send_gotv_amount, name="send_gotv_amount")
+    path('send_gotv_amount/<str:client_ref>/<str:account_number>/<str:amount>', gotv_views.send_gotv_amount, name="send_gotv_amount"),
+
+    path('pay_for_dstv', dstv_views.pay_for_dstv, name="pay_for_dstv"),
+    path('send_dstv_amount/<str:client_ref>/<str:account_number>/<str:amount>', dstv_views.send_dstv_amount, name="send_dstv_amount"),
 ]
