@@ -74,6 +74,15 @@ urlpatterns = [
 
     path('bundle/mtn/vid10', other_mtn_bundles.pay_for_v10_bundle, name="mtn_v10_bundle"),
     path('send_v10_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v10_bundle, name="send_v10_bundle"),
+
+    path('bundle/mtn/social1', other_mtn_bundles.pay_for_s1_bundle, name="mtn_s1_bundle"),
+    path('send_s1_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_s1_bundle, name="send_s1_bundle"),
+
+    path('bundle/mtn/social5', other_mtn_bundles.pay_for_s5_bundle, name="mtn_s5_bundle"),
+    path('send_s5_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_s5_bundle, name="send_s5_bundle"),
+
+    path('bundle/mtn/social10', other_mtn_bundles.pay_for_s10_bundle, name="mtn_s10_bundle"),
+    path('send_s10_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_s10_bundle, name="send_s10_bundle"),
     ####################################################################################################################
 
     path('bundle/tigo/1', tigo_bundle_views.pay_for_1_bundle, name="tigo_1_bundle"),
