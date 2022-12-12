@@ -9,7 +9,7 @@ class AirtimeForm(forms.Form):
         cleaned_data = super(AirtimeForm, self).clean()
         phone = cleaned_data.get('phone')
         amount = cleaned_data.get('amount')
-        if not phone and not amount and not provider:
+        if not phone and not amount:
             raise forms.ValidationError('Fill all the spaces provided!')
         if phone:
             if str(phone)[:3] != "233":
@@ -32,3 +32,15 @@ class BundleForm(forms.Form):
                 raise forms.ValidationError('Number must start with country code: Eg. 233XXXXXXXXX')
             if len(str(phone)) != 12:
                 raise forms.ValidationError('Check your number and try again. You may want to exclude the "0" after 233')
+
+
+class TVForm(forms.Form):
+    account_number = forms.IntegerField(label='Account Number', required=True)
+    amount = forms.FloatField(label='Amount', required=True)
+
+    def clean(self):
+        cleaned_data = super(TVForm, self).clean()
+        phone = cleaned_data.get('phone')
+        amount = cleaned_data.get('amount')
+        if not phone and not amount:
+            raise forms.ValidationError('Fill all the spaces provided!')

@@ -6,6 +6,7 @@ from .airtelTigo import airtelTigo_bundle_views as tigo_bundle_views
 from .voda import voda_bundle_views as voda_bundle_views
 from .mtn import other_mtn_bundle_views as other_mtn_bundles
 from .airtelTigo import sika_kokoo_views as sika_kokoo_bundles
+from .gotv import gotv_views
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -170,4 +171,8 @@ urlpatterns = [
 
     path('bundle/voda/400', voda_bundle_views.pay_for_400_bundle, name="voda_400_bundle"),
     path('send_400_voda_bundle/<str:client_ref>/<str:phone_number>', voda_bundle_views.send_400_bundle, name="send_400_bundle"),
+
+    ############################################################################################################33
+    path('pay_for_gotv', gotv_views.pay_for_gotv, name="pay_for_gotv"),
+    path('send_gotv_amount/<str:client_ref>/<str:account_number>/<str:amount>', gotv_views.send_gotv_amount, name="send_gotv_amount")
 ]

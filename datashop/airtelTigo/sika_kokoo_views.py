@@ -571,5 +571,3 @@ def send_sk20_bundle(request, client_ref, phone_number):
             return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
 
             break
-
-######################################### 1 CEDI BUNDLE ######################################################
