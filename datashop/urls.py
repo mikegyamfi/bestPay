@@ -8,6 +8,7 @@ from .mtn import other_mtn_bundle_views as other_mtn_bundles
 from .airtelTigo import sika_kokoo_views as sika_kokoo_bundles
 from .gotv import gotv_views
 from .dstv import dstv_views
+from .startimes import startimes_views
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -179,4 +180,7 @@ urlpatterns = [
 
     path('pay_for_dstv', dstv_views.pay_for_dstv, name="pay_for_dstv"),
     path('send_dstv_amount/<str:client_ref>/<str:account_number>/<str:amount>', dstv_views.send_dstv_amount, name="send_dstv_amount"),
+
+    path('pay_for_startimes', startimes_views.pay_for_startimes, name="pay_for_startimes"),
+    path('send_startimes_amount/<str:client_ref>/<str:account_number>/<str:amount>', startimes_views.send_startimes_amount, name="send_startimes_amount"),
 ]
