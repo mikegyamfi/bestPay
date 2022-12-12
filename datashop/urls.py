@@ -118,6 +118,21 @@ urlpatterns = [
 
     path('bundle/tigo/sk3', sika_kokoo_bundles.pay_for_sk3_bundle, name="tigo_sk3_bundle"),
     path('send_sk3_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk3_bundle, name="send_sk3_bundle"),
+
+    path('bundle/tigo/sk5', sika_kokoo_bundles.pay_for_sk5_bundle, name="tigo_sk5_bundle"),
+    path('send_sk5_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk5_bundle, name="send_sk5_bundle"),
+    
+    path('bundle/tigo/sk6', sika_kokoo_bundles.pay_for_sk6_bundle, name="tigo_sk6_bundle"),
+    path('send_sk6_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk6_bundle, name="send_sk6_bundle"),
+    
+    path('bundle/tigo/sk10', sika_kokoo_bundles.pay_for_sk10_bundle, name="tigo_sk10_bundle"),
+    path('send_sk10_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk10_bundle, name="send_sk10_bundle"),
+    
+    path('bundle/tigo/sk11', sika_kokoo_bundles.pay_for_sk11_bundle, name="tigo_sk11_bundle"),
+    path('send_sk11_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk11_bundle, name="send_sk11_bundle"),
+    
+    path('bundle/tigo/sk15', sika_kokoo_bundles.pay_for_sk15_bundle, name="tigo_sk15_bundle"),
+    path('send_sk15_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk15_bundle, name="send_sk15_bundle"),
     ##########################################################################################################################
 
     path('bundle/voda/0.5', voda_bundle_views.pay_for_50p_bundle, name="voda_50p_bundle"),
