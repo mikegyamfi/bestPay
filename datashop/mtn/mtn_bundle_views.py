@@ -1234,7 +1234,7 @@ def pay_for_k1_bundle(request):
         form = BundleForm(request.POST)
         if form.is_valid():
             phone_number = str(form.cleaned_data["phone"])
-            amount = 1.09
+            amount = 0.99
 
             url = "https://payproxyapi.hubtel.com/items/initiate"
 
