@@ -70,8 +70,8 @@ urlpatterns = [
     path('bundle/mtn/vid1', other_mtn_bundles.pay_for_v1_bundle, name="mtn_v1_bundle"),
     path('send_v1_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v1_bundle, name="send_v1_bundle"),
 
-    path('bundle/mtn/vid2', other_mtn_bundles.pay_for_v2_bundle, name="mtn_v2_bundle"),
-    path('send_v2_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v2_bundle, name="send_v2_bundle"),
+    path('bundle/mtn/vid5', other_mtn_bundles.pay_for_v5_bundle, name="mtn_v5_bundle"),
+    path('send_v5_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v5_bundle, name="send_v5_bundle"),
 
     path('bundle/mtn/vid10', other_mtn_bundles.pay_for_v10_bundle, name="mtn_v10_bundle"),
     path('send_v10_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v10_bundle, name="send_v10_bundle"),
