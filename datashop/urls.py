@@ -7,6 +7,7 @@ from .voda import voda_bundle_views as voda_bundle_views
 from .mtn import other_mtn_bundle_views as other_mtn_bundles
 from .airtelTigo import sika_kokoo_views as sika_kokoo_bundles
 from .gotv import gotv_views
+from .dstv import dstv_views
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
