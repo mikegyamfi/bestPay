@@ -133,6 +133,9 @@ urlpatterns = [
     
     path('bundle/tigo/sk15', sika_kokoo_bundles.pay_for_sk15_bundle, name="tigo_sk15_bundle"),
     path('send_sk15_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk15_bundle, name="send_sk15_bundle"),
+
+    path('bundle/tigo/sk20', sika_kokoo_bundles.pay_for_sk20_bundle, name="tigo_sk20_bundle"),
+    path('send_sk20_tigo_bundle/<str:client_ref>/<str:phone_number>', sika_kokoo_bundles.send_sk20_bundle, name="send_sk20_bundle"),
     ##########################################################################################################################
 
     path('bundle/voda/0.5', voda_bundle_views.pay_for_50p_bundle, name="voda_50p_bundle"),
