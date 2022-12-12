@@ -4,6 +4,7 @@ from . import views
 from .mtn import mtn_bundle_views as bundle_views
 from .airtelTigo import airtelTigo_bundle_views as tigo_bundle_views
 from .voda import voda_bundle_views as voda_bundle_views
+from .mtn import other_mtn_bundle_views as other_mtn_bundles
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -62,8 +63,17 @@ urlpatterns = [
     path('bundle/mtn/400', bundle_views.pay_for_400_bundle, name="mtn_400_bundle"),
     path('send_400_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_400_bundle, name="send_400_bundle"),
 
-    path('bundle/mtn/k1', bundle_views.pay_for_k1_bundle, name="mtn_k1_bundle"),
-    path('send_k1_mtn_bundle/<str:client_ref>/<str:phone_number>', bundle_views.send_k1_bundle, name="send_k1_bundle"),
+    path('bundle/mtn/k1', other_mtn_bundles.pay_for_k1_bundle, name="mtn_k1_bundle"),
+    path('send_k1_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_k1_bundle, name="send_k1_bundle"),
+
+    path('bundle/mtn/vid1', other_mtn_bundles.pay_for_v1_bundle, name="mtn_v1_bundle"),
+    path('send_v1_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v1_bundle, name="send_v1_bundle"),
+
+    path('bundle/mtn/vid2', other_mtn_bundles.pay_for_v2_bundle, name="mtn_v2_bundle"),
+    path('send_v2_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v2_bundle, name="send_v2_bundle"),
+
+    path('bundle/mtn/vid10', other_mtn_bundles.pay_for_v10_bundle, name="mtn_v10_bundle"),
+    path('send_v10_mtn_bundle/<str:client_ref>/<str:phone_number>', other_mtn_bundles.send_v10_bundle, name="send_v10_bundle"),
     ####################################################################################################################
 
     path('bundle/tigo/1', tigo_bundle_views.pay_for_1_bundle, name="tigo_1_bundle"),
