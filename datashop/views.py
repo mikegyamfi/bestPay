@@ -71,7 +71,10 @@ def send_airtime_mtn(request, client_ref, phone, amount):
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
         try:
-            content = json.loads(request["content"])
+            try:
+                content = json.loads(request["content"])
+            except ValueError():
+                return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_mtn/{client_ref}/{phone}/{amount}')
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
         except KeyError:
@@ -163,9 +166,15 @@ def send_airtime_voda(request, client_ref, phone, amount):
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
-        content = json.loads(request["content"])
-        status = content["Status"]
-        ref = content["Data"]["ClientReference"]
+        try:
+            try:
+                content = json.loads(request["content"])
+            except ValueError():
+                return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_voda/{client_ref}/{phone}/{amount}')
+            status = content["Status"]
+            ref = content["Data"]["ClientReference"]
+        except KeyError():
+            return redirect('failed')
         if ref == client_ref and status == "Success":
             voda_url = "https://cs.hubtel.com/commissionservices/2016884/f4be83ad74c742e185224fdae1304800"
 
@@ -251,9 +260,15 @@ def send_airtime_tigo(request, client_ref, phone, amount):
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
-        content = json.loads(request["content"])
-        status = content["Status"]
-        ref = content["Data"]["ClientReference"]
+        try:
+            try:
+                content = json.loads(request["content"])
+            except ValueError():
+                return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_tigo/{client_ref}/{phone}/{amount}')
+            status = content["Status"]
+            ref = content["Data"]["ClientReference"]
+        except KeyError():
+            return redirect('failed')
         if ref == client_ref and status == "Success":
             tigo_url = "https://cs.hubtel.com/commissionservices/2016884/dae2142eb5a14c298eace60240c09e4b"
 
@@ -340,9 +355,15 @@ def send_airtime_glo(request, client_ref, phone, amount):
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
-        content = json.loads(request["content"])
-        status = content["Status"]
-        ref = content["Data"]["ClientReference"]
+        try:
+            try:
+                content = json.loads(request["content"])
+            except ValueError():
+                return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_glo/{client_ref}/{phone}/{amount}')
+            status = content["Status"]
+            ref = content["Data"]["ClientReference"]
+        except KeyError():
+            return redirect('failed')
         if ref == client_ref and status == "Success":
             glo_url = "https://cs.hubtel.com/commissionservices/2016884/47d88e88f50f47468a34a14ac73e8ab5"
 
