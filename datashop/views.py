@@ -73,7 +73,7 @@ def send_airtime_mtn(request, client_ref, phone, amount):
         try:
             try:
                 content = json.loads(request["content"])
-            except ValueError():
+            except ValueError:
                 return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_mtn/{client_ref}/{phone}/{amount}')
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
@@ -169,11 +169,11 @@ def send_airtime_voda(request, client_ref, phone, amount):
         try:
             try:
                 content = json.loads(request["content"])
-            except ValueError():
+            except ValueError:
                 return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_voda/{client_ref}/{phone}/{amount}')
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
-        except KeyError():
+        except KeyError:
             return redirect('failed')
         if ref == client_ref and status == "Success":
             voda_url = "https://cs.hubtel.com/commissionservices/2016884/f4be83ad74c742e185224fdae1304800"
@@ -263,11 +263,11 @@ def send_airtime_tigo(request, client_ref, phone, amount):
         try:
             try:
                 content = json.loads(request["content"])
-            except ValueError():
+            except ValueError:
                 return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_tigo/{client_ref}/{phone}/{amount}')
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
-        except KeyError():
+        except KeyError:
             return redirect('failed')
         if ref == client_ref and status == "Success":
             tigo_url = "https://cs.hubtel.com/commissionservices/2016884/dae2142eb5a14c298eace60240c09e4b"
@@ -358,11 +358,11 @@ def send_airtime_glo(request, client_ref, phone, amount):
         try:
             try:
                 content = json.loads(request["content"])
-            except ValueError():
+            except ValueError:
                 return redirect(f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_glo/{client_ref}/{phone}/{amount}')
             status = content["Status"]
             ref = content["Data"]["ClientReference"]
-        except KeyError():
+        except KeyError:
             return redirect('failed')
         if ref == client_ref and status == "Success":
             glo_url = "https://cs.hubtel.com/commissionservices/2016884/47d88e88f50f47468a34a14ac73e8ab5"
