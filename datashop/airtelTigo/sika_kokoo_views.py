@@ -6,7 +6,6 @@ import json
 from django.http import HttpResponse
 import random
 
-
 def pay_for_sk3_bundle(request):
     client_ref = 'gds'+str(random.randint(11111111, 99999999))
 
@@ -50,8 +49,9 @@ def pay_for_sk3_bundle(request):
 
 def send_sk3_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -131,8 +131,9 @@ def pay_for_sk5_bundle(request):
 
 def send_sk5_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -212,8 +213,9 @@ def pay_for_sk6_bundle(request):
 
 def send_sk6_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -293,8 +295,9 @@ def pay_for_sk10_bundle(request):
 
 def send_sk10_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -374,8 +377,9 @@ def pay_for_sk11_bundle(request):
 
 def send_sk11_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -455,8 +459,9 @@ def pay_for_sk15_bundle(request):
 
 def send_sk15_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -536,8 +541,9 @@ def pay_for_sk20_bundle(request):
 
 def send_sk20_bundle(request, client_ref, phone_number):
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
