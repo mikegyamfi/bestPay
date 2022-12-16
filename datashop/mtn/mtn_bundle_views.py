@@ -5,6 +5,7 @@ from django.contrib import messages
 import json
 from django.http import HttpResponse
 import random
+from decouple import config
 
 def pay_for_50p_bundle(request):
     client_ref = 'gds'+str(random.randint(11111111, 99999999))
@@ -50,7 +51,8 @@ def pay_for_50p_bundle(request):
 def send_50p_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -131,7 +133,8 @@ def pay_for_1_bundle(request):
 def send_1_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -214,7 +217,8 @@ def pay_for_3_bundle(request):
 def send_3_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -297,7 +301,8 @@ def pay_for_10_bundle(request):
 def send_10_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -378,7 +383,8 @@ def pay_for_20_bundle(request):
 def send_20_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -459,7 +465,8 @@ def pay_for_40_bundle(request):
 def send_40_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -540,7 +547,8 @@ def pay_for_60_bundle(request):
 def send_60_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -621,7 +629,8 @@ def pay_for_80_bundle(request):
 def send_80_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -702,7 +711,8 @@ def pay_for_100_bundle(request):
 def send_100_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -783,7 +793,8 @@ def pay_for_120_bundle(request):
 def send_120_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -864,7 +875,8 @@ def pay_for_150_bundle(request):
 def send_150_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -945,7 +957,8 @@ def pay_for_200_bundle(request):
 def send_200_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -1026,7 +1039,8 @@ def pay_for_250_bundle(request):
 def send_250_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -1107,7 +1121,8 @@ def pay_for_300_bundle(request):
 def send_300_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -1189,7 +1204,8 @@ def pay_for_400_bundle(request):
 def send_400_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
@@ -1271,7 +1287,8 @@ def pay_for_k1_bundle(request):
 def send_k1_bundle(request, client_ref, phone_number):
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 

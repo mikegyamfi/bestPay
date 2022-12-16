@@ -163,9 +163,9 @@ def voda_request(request):
 
 def send_airtime_voda(request, client_ref, phone, amount):
     headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
@@ -258,9 +258,9 @@ def airtel_tigo_request(request):
 
 def send_airtime_tigo(request, client_ref, phone, amount):
     headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
@@ -354,9 +354,9 @@ def glo_request(request):
 
 def send_airtime_glo(request, client_ref, phone, amount):
     headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:

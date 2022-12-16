@@ -5,6 +5,7 @@ from django.contrib import messages
 import json
 from django.http import HttpResponse
 import random
+from decouple import config
 
 def pay_for_gotv(request):
     client_ref = 'gds'+str(random.randint(11111111, 99999999))
@@ -64,9 +65,9 @@ def pay_for_gotv(request):
 
 def send_gotv_amount(request, client_ref, account_number, amount):
     headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        "api-key": config('API_KEY')
     }
     webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
 
