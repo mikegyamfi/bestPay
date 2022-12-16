@@ -226,7 +226,7 @@ def airtel_tigo_request(request):
             payload = json.dumps({
             "totalAmount": amount_to_be_charged,
             "description": "Test",
-            "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
+            "callbackUrl": 'https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957',
             "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_tigo/{client_ref}/{phone}/{amount}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
@@ -258,7 +258,7 @@ def send_airtime_tigo(request, client_ref, phone, amount):
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET", "https://webhook.site/token/9125cb31-9481-47ad-972f-d1d7765a5957/requests?sorting=newest", headers=headers)
     for request in webhook_response.json()['data']:
         try:
             try:
