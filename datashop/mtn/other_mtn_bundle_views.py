@@ -69,7 +69,7 @@ def send_v1_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.0,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"video_bundle_1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"video_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -151,7 +151,7 @@ def send_v5_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5.0,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"video_bundle_2\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"video_bundle_2\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -233,7 +233,7 @@ def send_v10_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10.0,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"video_bundle_3\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"video_bundle_3\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -315,7 +315,7 @@ def send_s1_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.0,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"social_media_bundle_1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"social_media_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -397,7 +397,7 @@ def send_s5_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5.0,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"social_media_bundle_2\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"social_media_bundle_2\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -479,7 +479,7 @@ def send_s10_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10.0,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"social_media_bundle_3\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"social_media_bundle_3\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'

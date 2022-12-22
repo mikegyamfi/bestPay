@@ -69,7 +69,7 @@ def send_50p_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 0.5,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 0.5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -151,7 +151,7 @@ def send_1_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_2\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_2\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -235,7 +235,7 @@ def send_3_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 3,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_3\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 3,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_3\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -319,7 +319,7 @@ def send_10_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_4\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_4\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -401,7 +401,7 @@ def send_20_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -483,7 +483,7 @@ def send_40_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 40,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 40,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -565,7 +565,7 @@ def send_60_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 60,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 60,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -647,7 +647,7 @@ def send_80_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 80,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 80,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -729,7 +729,7 @@ def send_100_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -811,7 +811,7 @@ def send_120_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 120,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 120,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -893,7 +893,7 @@ def send_150_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 150,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 150,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -975,7 +975,7 @@ def send_200_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 200,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 200,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -1057,7 +1057,7 @@ def send_250_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 250,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 250,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -1139,7 +1139,7 @@ def send_300_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 299,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 299,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -1222,7 +1222,7 @@ def send_400_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA400\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA400\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'
@@ -1305,7 +1305,7 @@ def send_k1_bundle(request, client_ref, phone_number):
         if ref == client_ref and status == "Success":
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.09,\r\n    \"CallbackUrl\": \"https://webhook.site/fcad8efa-624b-44c8-a129-b1c01921191d\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"kokrokoo_bundle_1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.09,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"kokrokoo_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
             'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
             'Content-Type': 'text/plain'

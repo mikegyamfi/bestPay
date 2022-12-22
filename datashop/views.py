@@ -84,7 +84,7 @@ def send_airtime_mtn(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             mtn_url = "https://cs.hubtel.com/commissionservices/2016884/fdd76c884e614b1c8f669a3207b09a98"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
@@ -181,7 +181,7 @@ def send_airtime_voda(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             voda_url = "https://cs.hubtel.com/commissionservices/2016884/f4be83ad74c742e185224fdae1304800"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
@@ -276,7 +276,7 @@ def send_airtime_tigo(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             tigo_url = "https://cs.hubtel.com/commissionservices/2016884/dae2142eb5a14c298eace60240c09e4b"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             airtime_headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
@@ -372,7 +372,7 @@ def send_airtime_glo(request, client_ref, phone, amount):
         if ref == client_ref and status == "Success":
             glo_url = "https://cs.hubtel.com/commissionservices/2016884/47d88e88f50f47468a34a14ac73e8ab5"
 
-            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/092193ad-e5e7-4f17-a472-3442a8670569\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
+            payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             airtime_headers = {
                 'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
