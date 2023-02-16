@@ -28,7 +28,7 @@ def pay_for_1_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -71,7 +71,7 @@ def send_1_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA1\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -110,7 +110,7 @@ def pay_for_2_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -153,7 +153,7 @@ def send_2_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 2,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA2\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -192,7 +192,7 @@ def pay_for_5_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -235,7 +235,7 @@ def send_5_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA5\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -274,7 +274,7 @@ def pay_for_10_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -317,7 +317,7 @@ def send_10_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA10\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -356,7 +356,7 @@ def pay_for_20_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -399,7 +399,7 @@ def send_20_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA20\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -438,7 +438,7 @@ def pay_for_50_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -481,7 +481,7 @@ def send_50_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 50,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA50\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -520,7 +520,7 @@ def pay_for_100_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -563,7 +563,7 @@ def send_100_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA100\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -602,7 +602,7 @@ def pay_for_300_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -645,7 +645,7 @@ def send_300_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 300,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA300\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -684,7 +684,7 @@ def pay_for_350_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -727,7 +727,7 @@ def send_350_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 350,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA350\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
@@ -766,7 +766,7 @@ def pay_for_400_bundle(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -809,7 +809,7 @@ def send_400_bundle(request, client_ref, phone_number):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA400\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 

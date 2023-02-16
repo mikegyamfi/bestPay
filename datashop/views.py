@@ -44,7 +44,7 @@ def mtn_request(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -87,7 +87,7 @@ def send_airtime_mtn(request, client_ref, phone, amount):
             payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             headers = {
-                'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -140,7 +140,7 @@ def voda_request(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -184,7 +184,7 @@ def send_airtime_voda(request, client_ref, phone, amount):
             payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             headers = {
-                'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -236,7 +236,7 @@ def airtel_tigo_request(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -279,7 +279,7 @@ def send_airtime_tigo(request, client_ref, phone, amount):
             payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             airtime_headers = {
-                'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -331,7 +331,7 @@ def glo_request(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -375,7 +375,7 @@ def send_airtime_glo(request, client_ref, phone, amount):
             payload = "{\r\n    \"Destination\": " + phone + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
                     
             airtime_headers = {
-                'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 

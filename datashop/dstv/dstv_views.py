@@ -43,7 +43,7 @@ def pay_for_dstv(request):
             "clientReference": client_ref
             })
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'application/json'
             }
 
@@ -86,7 +86,7 @@ def send_dstv_amount(request, client_ref, account_number, amount):
 
             payload = "{\r\n    \"Destination\": " + account_number + ",\r\n    \"Amount\": " + amount + ",\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"TestEVD01027\"\r\n}"
             headers = {
-            'Authorization': 'Basic VnY3MHhuTTplNTAzYzcyMGYzYzA0N2Q2ODNjYTM3MWQ5YWEwMDZkZg==',
+            'Authorization': config("HUBTEL_API_KEY"),
             'Content-Type': 'text/plain'
             }
 
