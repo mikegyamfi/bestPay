@@ -24,7 +24,7 @@ def pay_for_1_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_1_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_1_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -66,7 +66,7 @@ def send_1_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -128,7 +128,7 @@ def send_1_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA1\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -188,7 +188,7 @@ def pay_for_2_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_2_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_2_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -230,7 +230,7 @@ def send_2_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -350,7 +350,7 @@ def pay_for_5_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_5_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_5_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -392,7 +392,7 @@ def send_5_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -513,7 +513,7 @@ def pay_for_10_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_10_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_10_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -555,7 +555,7 @@ def send_10_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -676,7 +676,7 @@ def pay_for_20_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_20_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_20_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -718,7 +718,7 @@ def send_20_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -839,7 +839,7 @@ def pay_for_50_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_50_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_50_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -881,7 +881,7 @@ def send_50_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -1002,7 +1002,7 @@ def pay_for_100_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_100_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_100_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1044,7 +1044,7 @@ def send_100_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -1165,7 +1165,7 @@ def pay_for_300_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_300_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_300_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1207,7 +1207,7 @@ def send_300_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -1328,7 +1328,7 @@ def pay_for_350_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_350_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_350_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1370,7 +1370,7 @@ def send_350_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -1490,7 +1490,7 @@ def pay_for_400_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_400_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_400_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1532,7 +1532,7 @@ def send_400_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",

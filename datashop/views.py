@@ -49,7 +49,7 @@ def mtn_request(request):
             "totalAmount": amount_to_be_charged,
             "description": "Test",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'http://127.0.0.1:8000/send_airtime_mtn/{client_ref}/{phone}/{amount}/mike/mike@mike.com',
+            "returnUrl": f'http://app.bestpaygh.com/send_airtime_mtn/{client_ref}/{phone}/{amount}/mike/mike@mike.com',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -235,7 +235,7 @@ def voda_request(request):
                 "totalAmount": amount_to_be_charged,
                 "description": "Test",
                 "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-                "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_voda/{client_ref}/{phone}/{amount}',
+                "returnUrl": f'https://app.bestpaygh.com/send_airtime_voda/{client_ref}/{phone}/{amount}',
                 "cancellationUrl": "https://www.google.com",
                 "merchantAccountNumber": "2017101",
                 "clientReference": client_ref
@@ -416,7 +416,7 @@ def airtel_tigo_request(request):
                 "totalAmount": amount_to_be_charged,
                 "description": "Test",
                 "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-                "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_tigo/{client_ref}/{phone}/{amount}',
+                "returnUrl": f'https://app.bestpaygh.com/send_airtime_tigo/{client_ref}/{phone}/{amount}',
                 "cancellationUrl": "https://www.google.com",
                 "merchantAccountNumber": "2017101",
                 "clientReference": client_ref
@@ -599,7 +599,7 @@ def glo_request(request):
                 "totalAmount": amount_to_be_charged,
                 "description": "Test",
                 "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-                "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_airtime_glo/{client_ref}/{phone}/{amount}',
+                "returnUrl": f'https://app.bestpaygh.com/send_airtime_glo/{client_ref}/{phone}/{amount}',
                 "cancellationUrl": "https://www.google.com",
                 "merchantAccountNumber": "2017101",
                 "clientReference": client_ref

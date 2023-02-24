@@ -25,7 +25,7 @@ def pay_for_sk3_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 500MB (GHS 3 - 1 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk3_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk3_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -67,7 +67,7 @@ def send_sk3_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -188,7 +188,7 @@ def pay_for_sk5_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 900MB (GHS 5 - 3 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk5_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk5_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -230,7 +230,7 @@ def send_sk5_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -351,7 +351,7 @@ def pay_for_sk6_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 1.2GB (GHS 6 - 2 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk6_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk6_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -393,7 +393,7 @@ def send_sk6_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -513,7 +513,7 @@ def pay_for_sk10_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 1.4GB (GHS 10 - 5 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk10_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk10_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -555,7 +555,7 @@ def send_sk10_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -676,7 +676,7 @@ def pay_for_sk11_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 2GB (GHS 11 - 2 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk11_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk11_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -718,7 +718,7 @@ def send_sk11_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -839,7 +839,7 @@ def pay_for_sk15_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 2.6GB (GHS 15 - 4 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk15_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk15_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -881,7 +881,7 @@ def send_sk15_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
@@ -1002,7 +1002,7 @@ def pay_for_sk20_bundle(request):
             "totalAmount": amount,
             "description": "Sika Kokoo 3GB (GHS 20 - 5 Day(s))",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_sk20_tigo_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_sk20_tigo_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1044,7 +1044,7 @@ def send_sk20_bundle(request, client_ref, phone_number, username, email):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
+        "api-key": config("API_KEY")
     }
     webhook_response = requests.request("GET",
                                         "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",

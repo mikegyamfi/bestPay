@@ -39,7 +39,7 @@ def pay_for_startimes(request):
             "totalAmount": amount_to_be_charged,
             "description": "GoTV",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_startimes_amount/{client_ref}/{account_number}/{amount}',
+            "returnUrl": f'https://app.bestpaygh.com/send_startimes_amount/{client_ref}/{account_number}/{amount}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref

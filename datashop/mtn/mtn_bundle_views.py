@@ -24,7 +24,7 @@ def pay_for_50p_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_0.5_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_0.5_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -128,7 +128,7 @@ def send_50p_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 0.5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -187,7 +187,7 @@ def pay_for_1_bundle(request):
             "totalAmount": amount,
             "description": "48.10MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_1_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_1_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -291,7 +291,7 @@ def send_1_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_2\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -352,7 +352,7 @@ def pay_for_3_bundle(request):
             "totalAmount": amount,
             "description": "471.70MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_3_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_3_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -456,7 +456,7 @@ def send_3_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 3.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_3\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -517,7 +517,7 @@ def pay_for_10_bundle(request):
             "totalAmount": amount,
             "description": "971.82MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_10_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_10_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -621,7 +621,7 @@ def send_10_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_4\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -680,7 +680,7 @@ def pay_for_20_bundle(request):
             "totalAmount": amount,
             "description": "1.61GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_20_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_20_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -784,7 +784,7 @@ def send_20_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -843,7 +843,7 @@ def pay_for_40_bundle(request):
             "totalAmount": amount,
             "description": "3.23GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_40_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_40_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -947,7 +947,7 @@ def send_40_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 40.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1006,7 +1006,7 @@ def pay_for_60_bundle(request):
             "totalAmount": amount,
             "description": "4.84GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_60_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_60_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1110,7 +1110,7 @@ def send_60_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 60.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1169,7 +1169,7 @@ def pay_for_80_bundle(request):
             "totalAmount": amount,
             "description": "6.45GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_80_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_80_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1273,7 +1273,7 @@ def send_80_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 80.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1332,7 +1332,7 @@ def pay_for_100_bundle(request):
             "totalAmount": amount,
             "description": "10.64GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_100_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_100_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1436,7 +1436,7 @@ def send_100_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1495,7 +1495,7 @@ def pay_for_120_bundle(request):
             "totalAmount": amount,
             "description": "12.77GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_120_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_120_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1599,7 +1599,7 @@ def send_120_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 120.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1658,7 +1658,7 @@ def pay_for_150_bundle(request):
             "totalAmount": amount,
             "description": "15.96GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_150_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_150_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1762,7 +1762,7 @@ def send_150_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 150.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1821,7 +1821,7 @@ def pay_for_200_bundle(request):
             "totalAmount": amount,
             "description": "35.84GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_200_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_200_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1925,7 +1925,7 @@ def send_200_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 200.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -1984,7 +1984,7 @@ def pay_for_250_bundle(request):
             "totalAmount": amount,
             "description": "44.80GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_250_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_250_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -2088,7 +2088,7 @@ def send_250_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 250.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -2147,7 +2147,7 @@ def pay_for_300_bundle(request):
             "totalAmount": amount,
             "description": "53.58GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_300_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_300_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -2251,7 +2251,7 @@ def send_300_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 300.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -2311,7 +2311,7 @@ def pay_for_400_bundle(request):
             "totalAmount": amount,
             "description": "53.58GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_400_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_400_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -2415,7 +2415,7 @@ def send_400_bundle(request, client_ref, phone_number, username, email):
 
             payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Authorization': config("HUBTEL_API_KEY"),
                 'Content-Type': 'text/plain'
             }
 
@@ -2475,7 +2475,7 @@ def pay_for_k1_bundle(request):
             "totalAmount": amount,
             "description": "Kokrokoo 400MB, 20Min",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_k1_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_k1_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref

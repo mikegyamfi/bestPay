@@ -24,7 +24,7 @@ def pay_for_50p_bundle(request):
             "totalAmount": amount,
             "description": "24.05MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_50p_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_50p_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -187,7 +187,7 @@ def pay_for_1_bundle(request):
             "totalAmount": amount,
             "description": "65MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_1_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_1_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -350,7 +350,7 @@ def pay_for_2_bundle(request):
             "totalAmount": amount,
             "description": "165MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_2_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_2_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -514,7 +514,7 @@ def pay_for_5_bundle(request):
             "totalAmount": amount,
             "description": "655MB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_5_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_5_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -678,7 +678,7 @@ def pay_for_10_bundle(request):
             "totalAmount": amount,
             "description": "1.5GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_10_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_10_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -841,7 +841,7 @@ def pay_for_20_bundle(request):
             "totalAmount": amount,
             "description": "4GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_20_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_20_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1005,7 +1005,7 @@ def pay_for_50_bundle(request):
             "totalAmount": amount,
             "description": "10.2GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_50_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_50_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1168,7 +1168,7 @@ def pay_for_100_bundle(request):
             "totalAmount": amount,
             "description": "16GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_100_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_100_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1331,7 +1331,7 @@ def pay_for_200_bundle(request):
             "totalAmount": amount,
             "description": "40GB Bundle",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_200_voda_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_200_voda_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -1494,7 +1494,7 @@ def pay_for_300_bundle(request):
                 "totalAmount": amount,
                 "description": "125GB Bundle",
                 "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-                "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_300_voda_bundle/{client_ref}/{phone_number}',
+                "returnUrl": f'https://app.bestpaygh.com/send_300_voda_bundle/{client_ref}/{phone_number}',
                 "cancellationUrl": "https://www.google.com",
                 "merchantAccountNumber": "2017101",
                 "clientReference": client_ref
@@ -1658,7 +1658,7 @@ def pay_for_400_bundle(request):
                 "totalAmount": amount,
                 "description": "225GB Bundle",
                 "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-                "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_400_voda_bundle/{client_ref}/{phone_number}',
+                "returnUrl": f'https://app.bestpaygh.com/send_400_voda_bundle/{client_ref}/{phone_number}',
                 "cancellationUrl": "https://www.google.com",
                 "merchantAccountNumber": "2017101",
                 "clientReference": client_ref

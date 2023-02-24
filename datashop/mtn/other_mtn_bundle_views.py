@@ -25,7 +25,7 @@ def pay_for_v1_bundle(request):
             "totalAmount": amount,
             "description": "Video 183.49MB",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_v1_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_v1_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -188,7 +188,7 @@ def pay_for_v5_bundle(request):
             "totalAmount": amount,
             "description": "Video 917.43MB",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_v5_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_v5_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -351,7 +351,7 @@ def pay_for_v10_bundle(request):
             "totalAmount": amount,
             "description": "Video 1.79GB",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_v10_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_v10_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -514,7 +514,7 @@ def pay_for_s1_bundle(request):
             "totalAmount": amount,
             "description": "Social Media 96.15MB",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_s1_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_s1_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -677,7 +677,7 @@ def pay_for_s5_bundle(request):
             "totalAmount": amount,
             "description": "Social Media 480.77MB",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_s5_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_s5_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
@@ -840,7 +840,7 @@ def pay_for_s10_bundle(request):
             "totalAmount": amount,
             "description": "Social Media 961.54MB",
             "callbackUrl": 'https://webhook.site/d53f5c53-eaba-4139-ad27-fb05b0a7be7f',
-            "returnUrl": f'https://bestpay-app-id6nm.ondigitalocean.app/send_s10_mtn_bundle/{client_ref}/{phone_number}',
+            "returnUrl": f'https://app.bestpaygh.com/send_s10_mtn_bundle/{client_ref}/{phone_number}',
             "cancellationUrl": "https://www.google.com",
             "merchantAccountNumber": "2017101",
             "clientReference": client_ref
