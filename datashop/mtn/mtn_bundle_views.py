@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 import requests
+
+from .. import models
 from ..forms import BundleForm
 from django.contrib import messages
 import json
@@ -48,44 +50,125 @@ def pay_for_50p_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_50p_bundle(request, client_ref, phone_number):
+def send_50p_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_0.5_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 0.5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 0.5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="50p Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="50p Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="50p Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 1 CEDI BUNDLE ######################################################
 
@@ -130,44 +213,125 @@ def pay_for_1_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_1_bundle(request, client_ref, phone_number):
+def send_1_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_1_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_2\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_2\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="1 cedi Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="1 cedi Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="1 cedi Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 2 CEDI BUNDLE ######################################################
 
@@ -214,44 +378,125 @@ def pay_for_3_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_3_bundle(request, client_ref, phone_number):
+def send_3_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_3_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 3,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_3\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 3.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_3\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="3 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="3 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="3 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 5 CEDI BUNDLE ######################################################
 
@@ -298,44 +543,125 @@ def pay_for_10_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_10_bundle(request, client_ref, phone_number):
+def send_10_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_10_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_4\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"data_bundle_4\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="10 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="10 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="10 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 20 CEDI BUNDLE ######################################################
 
@@ -380,44 +706,125 @@ def pay_for_20_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_20_bundle(request, client_ref, phone_number):
+def send_20_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_20_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="20 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="20 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="20 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 40 CEDI BUNDLE ######################################################
 
@@ -462,44 +869,125 @@ def pay_for_40_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_40_bundle(request, client_ref, phone_number):
+def send_40_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_40_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 40,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 40.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="40 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="40 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="40 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 60 CEDI BUNDLE ######################################################
 
@@ -544,44 +1032,125 @@ def pay_for_60_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_60_bundle(request, client_ref, phone_number):
+def send_60_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_60_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 60,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 60.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="60 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="60 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="60 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 80 CEDI BUNDLE ######################################################
 
@@ -626,44 +1195,125 @@ def pay_for_80_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_80_bundle(request, client_ref, phone_number):
+def send_80_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_80_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 80,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 80.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="80 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="80 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="80 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 100 CEDI BUNDLE ######################################################
 
@@ -708,44 +1358,125 @@ def pay_for_100_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_100_bundle(request, client_ref, phone_number):
+def send_100_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_100_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="100 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="100 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="100 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 120 CEDI BUNDLE ######################################################
 
@@ -790,44 +1521,125 @@ def pay_for_120_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_120_bundle(request, client_ref, phone_number):
+def send_120_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_120_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 120,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 120.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="120 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="120 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="120 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 150 CEDI BUNDLE ######################################################
 
@@ -872,44 +1684,125 @@ def pay_for_150_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_150_bundle(request, client_ref, phone_number):
+def send_150_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_150_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 150,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 150.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="150 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="150 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="150 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 200 CEDI BUNDLE ######################################################
 
@@ -954,44 +1847,125 @@ def pay_for_200_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_200_bundle(request, client_ref, phone_number):
+def send_200_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_200_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 200,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 200.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="200 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="200 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="200 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 250 CEDI BUNDLE ######################################################
 
@@ -1036,44 +2010,125 @@ def pay_for_250_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_250_bundle(request, client_ref, phone_number):
+def send_250_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_250_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 250,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 250.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="250 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="250 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="250 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ######################################### 299 CEDI BUNDLE ######################################################
 
@@ -1118,44 +2173,125 @@ def pay_for_300_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_300_bundle(request, client_ref, phone_number):
+def send_300_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_300_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 299,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 300.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="300 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="300 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="300 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 
 ######################################### 400 CEDI BUNDLE ######################################################
@@ -1201,44 +2337,125 @@ def pay_for_400_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_400_bundle(request, client_ref, phone_number):
+def send_400_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_400_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA400\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400.0,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"flexi_data_bundle\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="400 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="400 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.MTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="400 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ############################################ Kokrooko ############################################3
 
@@ -1284,43 +2501,124 @@ def pay_for_k1_bundle(request):
     return render(request, "store/layouts/mtn_bundle.html", {'form': form})
 
 
-def send_k1_bundle(request, client_ref, phone_number):
+def send_k1_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_k1_mtn_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/b230733cd56b4a0fad820e39f66bc27c"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.09,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"kokrokoo_bundle_1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1.09,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"kokrokoo_bundle_1\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_mtn_transaction = models.OtherMTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="Kokrooko",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_mtn_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_mtn_transaction = models.OtherMTNBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="Kokrooko",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_mtn_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/mtn_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_mtn_transaction = models.OtherMTNBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="Kokrooko",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_mtn_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 

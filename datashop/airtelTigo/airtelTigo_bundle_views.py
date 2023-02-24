@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 import requests
+
+from .. import models
 from ..forms import BundleForm
 from django.contrib import messages
 import json
@@ -48,44 +50,126 @@ def pay_for_1_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_1_bundle(request, client_ref, phone_number):
+def send_1_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_1_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA1\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 1,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA1\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': "Basic NFJBUm9QNzplYjdhMTkxNzIyZmE0YmNjOWUwMjE5MjQyNzVmODgxNg==",
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="1 cedi Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="1 cedi Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="1 cedi Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
                     
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
 
 ########################################### 2 cedis bundle #############################################################3
 
@@ -130,45 +214,125 @@ def pay_for_2_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_2_bundle(request, client_ref, phone_number):
+def send_2_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_2_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 2,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA2\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 2,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA2\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="2 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="2 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
-
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="2 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 ########################################### 5 cedis bundle #############################################################3
 
 def pay_for_5_bundle(request):
@@ -212,44 +376,125 @@ def pay_for_5_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_5_bundle(request, client_ref, phone_number):
+def send_5_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_5_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA5\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 5,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA5\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="5 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="5 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="5 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ########################################### 10 cedis bundle #############################################################3
 
@@ -294,44 +539,125 @@ def pay_for_10_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_10_bundle(request, client_ref, phone_number):
+def send_10_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_10_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA10\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 10,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA10\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="10 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="10 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="10 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ########################################### 20 cedis bundle #############################################################3
 
@@ -376,44 +702,125 @@ def pay_for_20_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_20_bundle(request, client_ref, phone_number):
+def send_20_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_20_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA20\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 20,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA20\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="20 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="20 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="20 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ########################################### 50 cedis bundle #############################################################3
 
@@ -458,44 +865,125 @@ def pay_for_50_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_50_bundle(request, client_ref, phone_number):
+def send_50_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_50_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 50,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA50\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 50,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA50\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="50 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="50 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="50 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ########################################### 100 cedis bundle #############################################################3
 
@@ -540,44 +1028,125 @@ def pay_for_100_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_100_bundle(request, client_ref, phone_number):
+def send_100_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_100_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA100\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 100,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA100\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="100 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="100 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="100 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ########################################### 300 cedis bundle #############################################################3
 
@@ -622,44 +1191,125 @@ def pay_for_300_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_300_bundle(request, client_ref, phone_number):
+def send_300_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_300_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 300,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA300\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 300,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA300\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="300 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="300 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="300 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 ########################################### 350 cedis bundle #############################################################3
 
@@ -704,45 +1354,125 @@ def pay_for_350_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_350_bundle(request, client_ref, phone_number):
+def send_350_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_350_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 350,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA350\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 350,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA350\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="350 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="350 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
-
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="350 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 ########################################### 400 cedis bundle #############################################################3
 
 def pay_for_400_bundle(request):
@@ -786,44 +1516,125 @@ def pay_for_400_bundle(request):
     return render(request, "store/layouts/tigo_bundle.html", {'form': form})
 
 
-def send_400_bundle(request, client_ref, phone_number):
+def send_400_bundle(request, client_ref, phone_number, username, email):
+    global ref_needed
+    global status_needed
+    global content_needed
+    payment = models.AppPayment.objects.filter(reference=client_ref, payment_visited=True)
+    if payment:
+        new_intruder = models.Intruder.objects.create(
+            username=username,
+            reference=client_ref,
+            message="Payment already exists and the reference has expired. User tried using it again."
+        )
+        new_intruder.save()
+        return redirect('intruder')
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        "api-key": config('API_KEY')
+        "api-key": "8f56b7ea-e1d0-4ce7-ace0-162f7dc55a39"
     }
-    webhook_response = requests.request("GET", "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest", headers=headers)
+    webhook_response = requests.request("GET",
+                                        "https://webhook.site/token/d53f5c53-eaba-4139-ad27-fb05b0a7be7f/requests?sorting=newest",
+                                        headers=headers)
 
-    for request in webhook_response.json()['data']:
-        try:
-            try:
-                content = json.loads(request["content"])
-            except ValueError:
-                return redirect(f"https://bestpay-app-id6nm.ondigitalocean.app/send_400_tigo_bundle/{client_ref}/{phone_number}")
-            status = content["Status"]
-            ref = content["Data"]["ClientReference"]
-        except KeyError:
-            return redirect("failed")
-        if ref == client_ref and status == "Success":
+    json_webhook_response = webhook_response.json()['data']
+    txns_list = []
+    ref_list = []
+    for txn in json_webhook_response:
+        txns_list.append(txn)
+    for item in txns_list:
+        content = json.loads(item["content"])
+        ref = content["Data"]["ClientReference"]
+        status = content["Status"]
+        print(ref)
+        print(status)
+        if ref == client_ref:
+            print("========================================================")
+            print("========================================================")
+            print("=======================Ref=================================")
+            print(ref)
+            print("=====================Client Ref================================")
+            print(client_ref)
+            ref_needed = ref
+            status_needed = status
+            content_needed = content
+            break
+
+    if ref_needed == client_ref and status_needed == "Success":
+        momo_number = content_needed["Data"]["CustomerPhoneNumber"]
+        webhook_amount = content_needed["Data"]["Amount"]
+        payment_description = content_needed["Data"]["Description"]
+        print(f"{status_needed}--{ref_needed}--{momo_number}--{webhook_amount}--{payment_description}")
+        payment = models.AppPayment.objects.filter(username=username, reference=client_ref, payment_visited=True)
+
+        if payment:
+            new_intruder = models.Intruder.objects.create(
+                username=username,
+                reference=client_ref,
+                message="Payment already exists and the reference has expired. User tried using it again."
+            )
+            new_intruder.save()
+            return redirect("intruder")
+        else:
+            new_payment = models.AppPayment.objects.create(
+                username=username,
+                reference=client_ref,
+                payment_number=momo_number,
+                amount=webhook_amount,
+                payment_description=payment_description,
+                transaction_status=status_needed,
+                payment_visited=True,
+                message="Payment verified successfully",
+            )
+            new_payment.save()
+
+            reference = f"\"{client_ref}\""
             url = "https://cs.hubtel.com/commissionservices/2016884/06abd92da459428496967612463575ca"
 
-            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": \"GHDS10001\",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA400\"\r\n    }\r\n}\r\n"
+            payload = "{\r\n    \"Destination\": " + phone_number + ",\r\n    \"Amount\": 400,\r\n    \"CallbackUrl\": \"https://webhook.site/9125cb31-9481-47ad-972f-d1d7765a5957\",\r\n    \"ClientReference\": " + reference + ",\r\n    \"Extradata\" : {\r\n        \"bundle\" : \"DATA400\"\r\n    }\r\n}\r\n"
             headers = {
-            'Authorization': config("HUBTEL_API_KEY"),
-            'Content-Type': 'text/plain'
+                'Authorization': config("HUBTEL_API_KEY"),
+                'Content-Type': 'text/plain'
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
             if response.status_code == 200:
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="400 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Success"
+                )
+                new_airtime_transaction.save()
                 return redirect('thank_you')
             else:
+                print("not 200 error")
+                new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+                    username=username,
+                    email=email,
+                    bundle_number=phone_number,
+                    offer="400 cedis Bundle",
+                    reference=client_ref,
+                    transaction_status="Failed"
+                )
+                new_airtime_transaction.save()
                 return redirect("failed")
-                    
-            form = BundleForm()
-            return render(request, 'store/layouts/tigo_bundle.html', context={'form': form})
-
-            break
+    else:
+        new_airtime_transaction = models.AirtelTigoBundleTransaction.objects.create(
+            username=username,
+            email=email,
+            bundle_number=phone_number,
+            offer="400 cedis Bundle",
+            reference=client_ref,
+            transaction_status="Failed"
+        )
+        new_airtime_transaction.save()
+        print("last error")
+        return redirect("failed")
 
 
 

@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +46,21 @@ INSTALLED_APPS = [
     'datashop',
     'bootstrap4'
 ]
+
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "BestPay",
+    "site_header": "BestPay",
+    # "site_logo": "img/site/bestPay Logo.png",
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": "BestPay",
+    "copyright": "de Dream Team",
+    # "login_logo": "img/site/bp.png",
+    "welcome_sign": "Welcome to the BestPay Admin",
+    "custom_css": 'css/admin.css',
+    "user_avatar": 'user',
+    # "order_with_respect_to": ["bestPayApp.payment", "bestPayApp.isharebundletransaction"],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
