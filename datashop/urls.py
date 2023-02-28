@@ -10,6 +10,8 @@ from .gotv import gotv_views
 from .dstv import dstv_views
 from .startimes import startimes_views
 from .airtelTigo import ishare
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -188,4 +190,4 @@ urlpatterns = [
 
 
     path('send_flexi_bundle/<str:client_ref>/<str:phone_number>/<str:bundle>/<str:username>/<str:email>/<str:user_phone>/<str:first_name>/<str:last_name>', ishare.send_ishare_bundle, name="ishare")
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
