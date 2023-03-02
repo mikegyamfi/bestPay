@@ -21,8 +21,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                {% for txn in txns %}
+            {% for txn in txns %}
+                <tr>
                     <td>{{ txn.airtime_number }}</td>
                     <td>{{ txn.offer }}</td>
                     {% if txn.transaction_status == "Success" %}
@@ -32,8 +32,8 @@
                     {% endif %}
                     <td>{{ txn.transaction_date }}</td>
                     <td>{{ txn.transaction_status }}</td>
-                {% endfor %}
-            </tr>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 
