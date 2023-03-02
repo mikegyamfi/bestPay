@@ -24,8 +24,8 @@
         <tbody>
             <tr>
                 {% for txn in txns %}
-                    <td>{{ txn.airtime_number }}</td>
-                    <td>{{ txn.airtime_amount }}</td>
+                    <td>{{ txn.account_number }}</td>
+                    <td>{{ txn.amount }}</td>
                     <td>{{ txn.provider }}</td>
                     <td>{{ txn.reference }}</td>
                     <td>{{ txn.transaction_date }}</td>

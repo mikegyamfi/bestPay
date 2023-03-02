@@ -14,9 +14,8 @@
         <thead>
             <tr>
                 <th>Phone Number</th>
-                <th>Amount</th>
+                <th>Offer</th>
                 <th>Reference</th>
-                <th>Provider</th>
                 <th>Txn. Date</th>
                 <th>Status</th>
             </tr>
@@ -24,9 +23,8 @@
         <tbody>
             <tr>
                 {% for txn in txns %}
-                    <td>{{ txn.airtime_number }}</td>
-                    <td>{{ txn.airtime_amount }}</td>
-                    <td>{{ txn.provider }}</td>
+                    <td>{{ txn.bundle_number }}</td>
+                    <td>{{ txn.offer }}</td>
                     <td>{{ txn.reference }}</td>
                     <td>{{ txn.transaction_date }}</td>
                     <td>{{ txn.transaction_status }}</td>

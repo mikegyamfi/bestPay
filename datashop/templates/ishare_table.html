@@ -14,9 +14,8 @@
         <thead>
             <tr>
                 <th>Phone Number</th>
-                <th>Amount</th>
+                <th>Offer</th>
                 <th>Reference</th>
-                <th>Provider</th>
                 <th>Txn. Date</th>
                 <th>Status</th>
             </tr>
@@ -25,9 +24,12 @@
             <tr>
                 {% for txn in txns %}
                     <td>{{ txn.airtime_number }}</td>
-                    <td>{{ txn.airtime_amount }}</td>
-                    <td>{{ txn.provider }}</td>
-                    <td>{{ txn.reference }}</td>
+                    <td>{{ txn.offer }}</td>
+                    {% if txn.transaction_status == "Success" %}
+                        {{ txn.batch_id }}
+                    {% else %}
+                        <td>{{ txn.reference }}</td>
+                    {% endif %}
                     <td>{{ txn.transaction_date }}</td>
                     <td>{{ txn.transaction_status }}</td>
                 {% endfor %}
