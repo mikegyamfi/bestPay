@@ -12,6 +12,7 @@ from .startimes import startimes_views
 from .airtelTigo import ishare
 from django.conf.urls.static import static
 from django.conf import settings
+from history import history
 
 urlpatterns = [
     path('airtime/mtn', views.mtn_request, name="mtn_airtime"),
@@ -188,6 +189,7 @@ urlpatterns = [
     path('pay_for_startimes', startimes_views.pay_for_startimes, name="pay_for_startimes"),
     path('send_startimes_amount/<str:client_ref>/<str:account_number>/<str:amount>/<str:username>/<str:email>', startimes_views.send_startimes_amount, name="send_startimes_amount"),
 
+    path('send_flexi_bundle/<str:client_ref>/<str:phone_number>/<str:bundle>/<str:username>/<str:email>/<str:user_phone>/<str:first_name>/<str:last_name>', ishare.send_ishare_bundle, name="ishare"),
+    path('airtime_transactions/<str:username>', history.airtime_transactions, name="airtime_transactions")
 
-    path('send_flexi_bundle/<str:client_ref>/<str:phone_number>/<str:bundle>/<str:username>/<str:email>/<str:user_phone>/<str:first_name>/<str:last_name>', ishare.send_ishare_bundle, name="ishare")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

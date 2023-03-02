@@ -1,0 +1,38 @@
+{% include 'store/base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">{{ heading }}</h1>
+        <p class="lead">These are all your {{ heading|lower }}.</p>
+      </div>
+    </div>
+
+    <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th>Phone Number</th>
+                <th>Amount</th>
+                <th>Reference</th>
+                <th>Provider</th>
+                <th>Txn. Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for txn in airtime_txns %}
+                    <td>{{ txn.airtime_number }}</td>
+                    <td>{{ txn.airtime_amount }}</td>
+                    <td>{{ txn.provider }}</td>
+                    <td>{{ txn.reference }}</td>
+                    <td>{{ txn.transaction_date }}</td>
+                    <td>{{ txn.transaction_status }}</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock content %}
