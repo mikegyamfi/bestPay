@@ -23,10 +23,10 @@
         <tbody>
             {% for txn in txns %}
                 <tr>
-                    <td>{{ txn.airtime_number }}</td>
+                    <td>{{ txn.bundle_number }}</td>
                     <td>{{ txn.offer }}</td>
                     {% if txn.transaction_status == "Success" %}
-                        {{ txn.batch_id }}
+                        <td>{{ txn.batch_id }}</td>
                     {% else %}
                         <td>{{ txn.reference }}</td>
                     {% endif %}
