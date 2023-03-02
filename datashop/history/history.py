@@ -39,7 +39,7 @@ def sika_kokoo_bundle_transactions(request, username):
 
 
 def ishare_bundle_transactions(request, username):
-    all_ishare_transactions = models.SikaKokooBundleTransaction.objects.filter(username=username)
+    all_ishare_transactions = models.AppIShareBundleTransaction.objects.filter(username=username)
     context = {'txns': all_ishare_transactions, 'heading': "Flexi Bundle Transactions"}
     print(all_ishare_transactions)
     for txn in all_ishare_transactions:
@@ -48,7 +48,7 @@ def ishare_bundle_transactions(request, username):
 
 
 def tv_transactions(request, username):
-    all_tv_transactions = models.SikaKokooBundleTransaction.objects.filter(username=username)
+    all_tv_transactions = models.TvTransaction.objects.filter(username=username)
     context = {'txns': all_tv_transactions, 'heading': "TV Transactions"}
     return render(request, "tv_table.html", context=context)
 
