@@ -40,8 +40,10 @@ def sika_kokoo_bundle_transactions(request, username):
 
 def ishare_bundle_transactions(request, username):
     all_ishare_transactions = models.SikaKokooBundleTransaction.objects.filter(username=username)
-    print(all_ishare_transactions[0])
     context = {'txns': all_ishare_transactions, 'heading': "Flexi Bundle Transactions"}
+    print(all_ishare_transactions)
+    for txn in all_ishare_transactions:
+        print(txn)
     return render(request, "ishare_table.html", context=context)
 
 
