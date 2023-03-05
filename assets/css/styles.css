@@ -16,6 +16,11 @@ body{
   margin-left: 0;
 }
 
+.table-striped>tbody>tr:nth-child(odd)>td, 
+.table-striped>tbody>tr:nth-child(odd)>th {
+   background-color: #607D8BFF; 
+ }
+
 .header{
     background-image: linear-gradient(to bottom right, #B469FF, #E85BFF);
     color: white;
