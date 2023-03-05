@@ -27,7 +27,7 @@ def tigo_bundle_transactions(request, username):
 
 
 def other_mtn_bundle_transactions(request, username):
-    all_other_mtn_bundle_transactions = models.AirtimeTransaction.objects.filter(username=username)
+    all_other_mtn_bundle_transactions = models.OtherMTNBundleTransaction.objects.filter(username=username)
     context = {'txns': all_other_mtn_bundle_transactions, 'heading': "Other MTN Bundle Transactions"}
     return render(request, "bundle_table.html", context=context)
 
