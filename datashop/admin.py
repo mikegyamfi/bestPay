@@ -8,7 +8,8 @@ class AppPaymentAdmin(admin.ModelAdmin):
 
 
 class AirtelTigoBundleTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username']
 
 
 class AirtimeTransactionAdmin(admin.ModelAdmin):
@@ -16,23 +17,28 @@ class AirtimeTransactionAdmin(admin.ModelAdmin):
 
 
 class AppIShareBundleTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'batch_id', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username']
 
 
 class MTNBundleTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username']
 
 
 class VodafoneBundleTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username']
 
 
 class OtherMTNBundleTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username']
 
 
 class SikaKokooBundleTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username']
 
 
 class TvTransactionAdmin(admin.ModelAdmin):
