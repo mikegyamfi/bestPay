@@ -11,6 +11,10 @@ body{
   margin-right: auto;
 }
 
+.container{
+  background-color: #607D8BFF;
+}
+
 .header{
     background-image: linear-gradient(to bottom right, #B469FF, #E85BFF);
     color: white;
