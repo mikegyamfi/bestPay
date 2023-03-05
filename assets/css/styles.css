@@ -13,6 +13,7 @@ body{
 
 .container{
   background-color: #607D8BFF;
+  margin-left: 0;
 }
 
 .header{
