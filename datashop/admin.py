@@ -8,12 +8,12 @@ class AppPaymentAdmin(admin.ModelAdmin):
 
 
 class AirtelTigoBundleTransactionAdmin(admin.ModelAdmin):
-    list_display = ['username', 'airtime_number', 'airtime_amount', 'provider', 'reference', 'transaction_status', 'transaction_date']
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
     search_fields = ['reference', 'username', 'airtime_number']
 
 
 class AirtimeTransactionAdmin(admin.ModelAdmin):
-    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
+    list_display = ['username', 'airtime_number', 'airtime_amount', 'provider', 'reference', 'transaction_status', 'transaction_date']
 
 
 class AppIShareBundleTransactionAdmin(admin.ModelAdmin):
