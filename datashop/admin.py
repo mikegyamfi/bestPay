@@ -4,41 +4,41 @@ from . import models
 
 class AppPaymentAdmin(admin.ModelAdmin):
     list_display = ['username', 'payment_number', 'amount', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference']
+    search_fields = ['reference', 'payment_number', 'amount']
 
 
 class AirtelTigoBundleTransactionAdmin(admin.ModelAdmin):
-    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference', 'username']
+    list_display = ['username', 'airtime_number', 'airtime_amount', 'provider', 'reference', 'transaction_status', 'transaction_date']
+    search_fields = ['reference', 'username', 'airtime_number']
 
 
 class AirtimeTransactionAdmin(admin.ModelAdmin):
-    ...
+    list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
 
 
 class AppIShareBundleTransactionAdmin(admin.ModelAdmin):
     list_display = ['username', 'bundle_number', 'offer', 'batch_id', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference', 'username']
+    search_fields = ['reference', 'username', 'bundle_number', 'batch_id']
 
 
 class MTNBundleTransactionAdmin(admin.ModelAdmin):
     list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference', 'username']
+    search_fields = ['reference', 'username', 'bundle_number']
 
 
 class VodafoneBundleTransactionAdmin(admin.ModelAdmin):
     list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference', 'username']
+    search_fields = ['reference', 'username', 'bundle_number']
 
 
 class OtherMTNBundleTransactionAdmin(admin.ModelAdmin):
     list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference', 'username']
+    search_fields = ['reference', 'username', 'bundle_number']
 
 
 class SikaKokooBundleTransactionAdmin(admin.ModelAdmin):
     list_display = ['username', 'bundle_number', 'offer', 'reference', 'transaction_status', 'transaction_date']
-    search_fields = ['reference', 'username']
+    search_fields = ['reference', 'username', 'bundle_number']
 
 
 class TvTransactionAdmin(admin.ModelAdmin):
