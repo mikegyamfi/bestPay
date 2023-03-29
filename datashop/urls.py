@@ -25,6 +25,7 @@ urlpatterns = [
     path('send_airtime_glo/<str:client_ref>/<str:phone>/<str:amount>/<str:username>/<str:email>', views.send_airtime_glo, name="send_airtime_glo"),
     path('thank_you', views.thank_you, name="thank_you"),
     path('failed', views.failed, name="failed"),
+    path('thank_you/mtn/<str:reference>/<str:receiver>/<str:user_phone>/<str:amount>', views.send_sms, name="send_mtn_sms"),
     path("intruder", views.intruder, name="intruder"),
     ###################################################################################################################
     path('bundle/mtn/0.5', bundle_views.pay_for_50p_bundle, name="mtn_50p_bundle"),
