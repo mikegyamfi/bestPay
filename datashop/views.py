@@ -765,7 +765,7 @@ def intruder(request):
 
 def send_sms(request, reference, receiver, user_phone, amount):
     sms_message = f"{reference} receiver of {amount} for {receiver}  ==> {user_phone}"
-                sms_url = f"https://sms.arkesel.com/sms/api?action=send-sms&api_key=UmpEc1JzeFV4cERKTWxUWktqZEs&to={user_phone}&from=BESTPAY GH&sms={sms_message}"
-                response = requests.request("GET", url=sms_url)
-                print(response.status_code)
+    sms_url = f"https://sms.arkesel.com/sms/api?action=send-sms&api_key=UmpEc1JzeFV4cERKTWxUWktqZEs&to={user_phone}&from=BESTPAY GH&sms={sms_message}"
+    response = requests.request("GET", url=sms_url)
+    print(response.status_code)
                 
